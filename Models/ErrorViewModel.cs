@@ -1,4 +1,4 @@
-namespace net_blog.Models;
+namespace NetBlog.Models;
 
 public class ErrorViewModel
 {
