@@ -1,4 +1,14 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using NetBlog.Areas.Identity.Data;
+using NetBlog.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("NetBlogContextConnection") ?? throw new InvalidOperationException("Connection string 'NetBlogContextConnection' not found.");
+
+builder.Services.AddDbContext<NetBlogContext>(options => options.UseSqlite(connectionString));
+
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<NetBlogContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -27,4 +37,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapBlazorHub();
+app.MapRazorPages();
 app.Run();
