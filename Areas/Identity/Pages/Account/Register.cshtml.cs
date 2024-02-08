@@ -105,6 +105,11 @@ namespace NetBlog.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                Response.Redirect("/Home/Index");
+            }
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)

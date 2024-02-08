@@ -92,6 +92,11 @@ namespace NetBlog.Areas.Identity.Pages.Account
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
 
+            if (User.Identity.IsAuthenticated)
+            {
+                Response.Redirect("/Home/Index");
+            }
+
             returnUrl ??= Url.Content("~/");
 
             // Clear the existing external cookie to ensure a clean login process
