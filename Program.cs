@@ -1,16 +1,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NetBlog.Areas.Identity.Data;
-using NetBlog.Data;
 using NetBlog.Models.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("NetBlogContextConnection") ?? throw new InvalidOperationException("Connection string 'NetBlogContextConnection' not found.");
 
-builder.Services.AddDbContext<UserContext>(options => options.UseSqlite(connectionString));
 builder.Services.AddDbContext<BlogContext>(options => options.UseSqlite(connectionString));
 
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<UserContext>();
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<BlogContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
