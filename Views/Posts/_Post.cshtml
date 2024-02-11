@@ -1,1 +1,8 @@
-﻿
+﻿@model PostViewModel
+
+<p class="text-left text-2xl font-bold">@Model.Title</p>
+<p class="md\:text-left">@Html.Raw(Model.Body)</p>
+<div class="flex flex-row mt-3 ml-auto float-right">
+	<p class="text-right text-slate-700 pt-1 mr-2">@Model.Email</p>
+	<img gravatar-email="@Model.Email); " gravatar-size="80" class="rounded-full h-9 w-9 ml-0 hover:scale-125 transform transition duration-1" ml-0" alt="GravatarHelper.DefaultImageIdenticon" /></a>
+</div>

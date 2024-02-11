@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NetBlog.Areas.Identity.Data;
@@ -26,10 +27,22 @@ namespace NetBlog.Controllers
 
         [Route("[controller]/{id?}")]
         [HttpGet]
-        public ActionResult Show(int id)
+        public async Task<ActionResult> Show(int id)
         {
-            return View();
-        }
+            var post = await _blogContext.Posts.FirstOrDefaultAsync(post => post.Id == id);
+
+            if(post == null)
+                return Redirect("/");
+
+			var postUser = await _userManager.FindByIdAsync(post.UserId);
+
+			var postView = new PostViewModel();
+			postView.Title = post.Title;
+            postView.Body = post.Body;
+            postView.Email = postUser.Email;
+
+			return View(postView);
+		}
 
 		[Route("[controller]/New")]
 		[HttpGet]
@@ -42,15 +55,14 @@ namespace NetBlog.Controllers
         // POST: PostsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("Title,Body")] PostViewModel postView)
+        public async Task<ActionResult> Create([Bind("Title,Body")] PostInput postInput)
         {
             if (ModelState.IsValid)
             {
                 var post = new Post();
                 post.User = await _userManager.GetUserAsync(this.User);
-                post.Title = postView.Title;
-                post.Body = postView.Body;
-
+                post.Title = postInput.Title;
+                post.Body = postInput.Body;
 
                 try
                 {
@@ -66,7 +78,7 @@ namespace NetBlog.Controllers
             }
             else
             {
-                return View(nameof(New), postView);
+                return View(nameof(New), postInput);
             }
         }
 
