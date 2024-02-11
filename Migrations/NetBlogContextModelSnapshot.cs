@@ -9,7 +9,7 @@ using NetBlog.Data;
 
 namespace NetBlog.Migrations
 {
-    [DbContext(typeof(NetBlogContext))]
+    [DbContext(typeof(UserContext))]
     partial class NetBlogContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

@@ -10,7 +10,7 @@ using NetBlog.Data;
 
 namespace NetBlog.Migrations
 {
-    [DbContext(typeof(NetBlogContext))]
+    [DbContext(typeof(UserContext))]
     [Migration("20240207213623_InitialCreate")]
     partial class InitialCreate
     {

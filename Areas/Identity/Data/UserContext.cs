@@ -5,9 +5,9 @@ using NetBlog.Areas.Identity.Data;
 
 namespace NetBlog.Data;
 
-public class NetBlogContext : IdentityDbContext<User>
+public class UserContext : IdentityDbContext<User>
 {
-    public NetBlogContext(DbContextOptions<NetBlogContext> options)
+    public UserContext(DbContextOptions<UserContext> options)
         : base(options)
     {
     }
