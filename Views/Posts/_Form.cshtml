@@ -1,10 +1,11 @@
-﻿@model PostViewModel
+﻿@model PostInput
 @{
-    string action = ViewData["FormAction"].ToString();
+    string formAction = ViewData["FormAction"]?.ToString();
+    var id = ViewContext.RouteData.Values["id"]?.ToString();
 }
 
-<div class="container mx-auto py-4 px-6 flex justify-center items-center flex-col sm:flex-row">
-    <form asp-controller="Posts" asp-action="@action" method="post">
+<div class="container mx-auto py-4 px-6 flex flex-row justify-center items-center ">
+    <form asp-controller="Posts" asp-action="@formAction" asp-route-id="@id" me class="basis-10/12">
         <div class="">
             <label for="Title" class="block text-sm font-medium leading-6 text-gray-900">Title</label>
             <input asp-for="Title" class="block mt-4 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />

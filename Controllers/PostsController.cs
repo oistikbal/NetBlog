@@ -52,59 +52,85 @@ namespace NetBlog.Controllers
             return View();
         }
 
-        // POST: PostsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("Title,Body")] PostInput postInput)
         {
-            if (ModelState.IsValid)
-            {
-                var post = new Post();
-                post.User = await _userManager.GetUserAsync(this.User);
-                post.Title = postInput.Title;
-                post.Body = postInput.Body;
-
-                try
-                {
-                    _blogContext.Posts.Add(post);
-                    await _blogContext.SaveChangesAsync();
-                }
-                catch(Exception e)
-                {
-                    _logger.LogError(e, e.Message);
-                }
-
-                return RedirectToAction(nameof(Show), new { id = post.Id }); ;
-            }
-            else
-            {
+            if (!ModelState.IsValid)
                 return View(nameof(New), postInput);
-            }
-        }
 
-		[Route("[controller]/edit/{id?}")]
-		[HttpGet]
-		[Authorize]
-		public ActionResult Edit(int id)
-        {
-            return View();
-        }
+            var post = new Post();
+            post.User = await _userManager.GetUserAsync(this.User);
+            post.Title = postInput.Title;
+            post.Body = postInput.Body;
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Update(int id, IFormCollection collection)
-        {
             try
             {
-                return RedirectToAction(nameof(Index));
+                _blogContext.Posts.Add(post);
+                await _blogContext.SaveChangesAsync();
             }
-            catch
+            catch(Exception e)
             {
-                return View();
+                _logger.LogError(e, e.Message);
             }
+
+            return RedirectToAction(nameof(Show), new { id = post.Id }); ;
         }
 
+		[Route("[controller]/{id?}/edit")]
+		[HttpGet]
+		[Authorize]
+		public async Task<ActionResult> Edit(int id)
+        {
+            var post = await _blogContext.Posts.FindAsync(id);
+
+            if (post == null)
+                return RedirectToAction("Index","Home");
+
+            var user = await _userManager.GetUserAsync(this.User);
+
+			if (user != null && post.User?.Id == user.Id)
+            {
+                var postInput = new PostInput();
+                postInput.Title = post.Title;
+                postInput.Body = post.Body;
+                return View(postInput);
+            }
+
+			return RedirectToAction("Index", "Home");
+		}
+
+        [Route("[controller]/{id?}")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<ActionResult> Update(int id, [Bind("Title,Body")] PostInput postInput)
+        {
+            if (!ModelState.IsValid)
+                return RedirectToAction(nameof(Edit), new { id = id });
+
+            var post = await _blogContext.Posts.FindAsync(id);
+
+            if (post == null)
+                return RedirectToAction("Index", "Home");
+
+            var user = await _userManager.GetUserAsync(this.User);
+
+            if (user != null && post.User?.Id == user.Id)
+            {
+                post.Title = postInput.Title;
+                post.Body = postInput.Body;
+                await _blogContext.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Show), new { id = post.Id });
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Route("[controller]/{id?}")]
+        [Authorize]
+        [HttpDelete]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {

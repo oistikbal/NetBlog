@@ -1,0 +1,8 @@
+﻿@model PostInput
+@{
+    ViewData["FormAction"] = "Update";
+}
+
+<p class="font-bold text-xl mt-3 text-center">Update Post</p>
+
+@await Html.PartialAsync("_Form", Model)
