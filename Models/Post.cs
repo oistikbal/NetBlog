@@ -21,6 +21,13 @@ namespace NetBlog.Models
         public string Email { get; set; }
     }
 
+    public class PostsView
+    {
+        public ICollection<PostView> Posts { get; set; }
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+    }
+
     public class PostInput
     {
         public string Title { get; set; }

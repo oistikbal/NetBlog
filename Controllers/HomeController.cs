@@ -21,10 +21,15 @@ public class HomeController : Controller
         _userManager = userManager;
     }
 
-    public async Task<IActionResult> Index()
+    [Route("/")]
+    [HttpGet]
+    public async Task<IActionResult> Index([FromQuery]int page = 1)
     {
+        const int pageSize = 10;
+
         var posts = await _blogContext.Posts
             .OrderByDescending(p => p.Id)
+            .Skip((page - 1) * pageSize)
             .Take(10)
             .ToListAsync();
 
@@ -41,7 +46,17 @@ public class HomeController : Controller
             postViews.Add(postView);
         }
 
-        return View(postViews);
+        var totalPosts = _blogContext.Posts.Count();
+        var totalPages = (int)Math.Ceiling(totalPosts / (double)pageSize);
+
+        var model = new PostsView
+        {
+            Posts = postViews,
+            CurrentPage = page,
+            TotalPages = totalPages
+        };
+
+        return View(model);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
