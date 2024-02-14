@@ -1,8 +1,16 @@
-﻿@{
+﻿@model ICollection<PostView>
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<p class="font-bold text-xl mt-3 text-center">Posts</p>
+
+<div class="mx-auto py-4 px-6 flex flex-col w-4/5">
+@{
+    foreach(var post in Model)
+    {
+        @await Html.PartialAsync("~/Views/Posts/_Post.cshtml", post)
+        ;
+    }
+}
 </div>

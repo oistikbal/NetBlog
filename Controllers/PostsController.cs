@@ -36,7 +36,7 @@ namespace NetBlog.Controllers
 
 			var postUser = await _userManager.FindByIdAsync(post.UserId);
 
-			var postView = new PostViewModel();
+			var postView = new PostView();
 			postView.Title = post.Title;
             postView.Body = post.Body;
             postView.Email = postUser.Email;
@@ -52,12 +52,13 @@ namespace NetBlog.Controllers
             return View();
         }
 
+        [Route("[controller]/Create")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("Title,Body")] PostInput postInput)
         {
             if (!ModelState.IsValid)
-                return View(nameof(New), postInput);
+                return View(nameof(New));
 
             var post = new Post();
             post.User = await _userManager.GetUserAsync(this.User);

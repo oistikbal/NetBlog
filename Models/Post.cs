@@ -14,7 +14,7 @@ namespace NetBlog.Models
         public string Body { get; set; }
     }
 
-    public class PostViewModel
+    public class PostView
     {
         public string Title { get; set; }
         public string Body { get; set; }
