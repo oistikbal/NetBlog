@@ -1,12 +1,12 @@
 ﻿@using System.Net.Http.Headers
+@using System.Net.Http
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Net.Http.Headers
 
 @inject IJSRuntime JS
 @inject HttpClient HttpClient
-@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
-@inject UserManager<User> UserManager
-@inject SignInManager<User> SignInManager
-@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject IHttpContextAccessor HttpContextAccessor
 <base href="/" />
 
 
@@ -15,16 +15,16 @@
 </button>
 @if (IsOpen)
 {
-<div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white p-4 rounded-lg shadow-lg">
-        <div class="text-lg font-semibold mb-2">Delete Confirmation</div>
-        <div class="text-gray-700 mb-4">Are you sure you want to delete?</div>
-        <div class="flex justify-end">
-            <button @onclick="OnConfirm" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mr-2">Delete</button>
-            <button @onclick="OnCancel" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Cancel</button>
+    <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-lg shadow-lg rounded p-5">
+            <div class="text-lg font-semibold mb-2">Delete Confirmation</div>
+            <div class="text-gray-700 mb-4">Are you sure you want to delete?</div>
+            <div class="flex justify-end">
+                <button @onclick="OnConfirm" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mr-2">Delete</button>
+                <button @onclick="OnCancel" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Cancel</button>
+            </div>
         </div>
     </div>
-</div>
 }
 
 
@@ -34,32 +34,25 @@
     [Parameter]
     public PostView PostView{ get; set; }
 
-    protected async override Task OnInitializedAsync()
-    {
-        var authState = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        // Include user authentication token in request headers
-        //HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", user.FindFirst("access_token").Value);
-    }
-
     private async Task OnConfirm(MouseEventArgs e)
     {
-        var authState = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var user = authState.User;
+        var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Delete,
+                RequestUri = new Uri(NavigationManager.BaseUri + $"Posts/{PostView.Id}")
+            };
 
-        var response = await HttpClient.DeleteAsync(NavigationManager.BaseUri + $"Posts/${PostView.Id}");
+        var cookieValue = HttpContextAccessor.HttpContext.Request.Cookies["IdentityCookie"];
+        await JS.InvokeVoidAsync("console.log", request.RequestUri);
+        request.Headers.Add("Cookie", new CookieHeaderValue("IdentityCookie", cookieValue).ToString());
 
+        var response = await HttpClient.SendAsync(request);
 
         if (response.IsSuccessStatusCode)
         {
-            await JS.InvokeVoidAsync("console.log", "suecces");
+            NavigationManager.NavigateTo("/Posts", true);
         }
-        else
-        {
-            await JS.InvokeVoidAsync("console.log", "NOT SCUCESFUL");
-        }
-
+        
         IsOpen = false;
     }
 

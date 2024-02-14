@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using NetBlog.Areas.Identity.Data;
 using NetBlog.Models.Data;
@@ -9,6 +10,24 @@ var connectionString = builder.Configuration.GetConnectionString("NetBlogContext
 builder.Services.AddDbContext<BlogContext>(options => options.UseSqlite(connectionString));
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<BlogContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = new PathString("/identity/account/login");
+    options.LogoutPath = new PathString("/identity/account/logout");
+    options.AccessDeniedPath = new PathString("/Home/AccessDenied");
+
+    options.Cookie = new()
+    {
+        Name = "IdentityCookie",
+        HttpOnly = true,
+        SameSite = SameSiteMode.Lax,
+        SecurePolicy = CookieSecurePolicy.Always
+    };
+    options.SlidingExpiration = true;
+    options.ExpireTimeSpan = TimeSpan.FromDays(30);
+});
+
 
 // Add services to the container.
 builder.Services.AddScoped<HttpClient>();
@@ -34,6 +53,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",

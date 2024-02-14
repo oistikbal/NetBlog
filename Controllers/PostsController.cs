@@ -170,10 +170,16 @@ namespace NetBlog.Controllers
         }
 
         [Route("[controller]/{id?}")]
+        [Authorize]
         [HttpDelete]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return Ok(new { Message = "Success" });
+            var post = await _blogContext.Posts.FindAsync(id);
+
+            _blogContext.Posts.Remove(post);
+            await _blogContext.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
