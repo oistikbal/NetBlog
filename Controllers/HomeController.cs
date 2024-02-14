@@ -21,43 +21,6 @@ public class HomeController : Controller
         _userManager = userManager;
     }
 
-    [Route("/")]
-    [HttpGet]
-    public async Task<IActionResult> Index([FromQuery]int page = 1)
-    {
-        const int pageSize = 10;
-
-        var posts = await _blogContext.Posts
-            .OrderByDescending(p => p.Id)
-            .Skip((page - 1) * pageSize)
-            .Take(10)
-            .ToListAsync();
-
-        var postViews = new List<PostView>();
-        foreach (var post in posts)
-        {
-            var user = await _userManager.FindByIdAsync(post.UserId);
-            var postView = new PostView
-            {
-                Title = post.Title,
-                Body = post.Body,
-                Email = user?.Email
-            };
-            postViews.Add(postView);
-        }
-
-        var totalPosts = _blogContext.Posts.Count();
-        var totalPages = (int)Math.Ceiling(totalPosts / (double)pageSize);
-
-        var model = new PostsView
-        {
-            Posts = postViews,
-            CurrentPage = page,
-            TotalPages = totalPages
-        };
-
-        return View(model);
-    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

@@ -1,8 +1,20 @@
 ﻿@model PostView
+@inject UserManager<User> UserManager
 
-<div class="flex justify-center">
-	<div class="basis-10/12 mx-auto py-4 px-6  justify-center ">
+<div class="flex justify-center ">
+	<div class="basis-10/12 mx-auto py-4 px-6">
 		@await Html.PartialAsync("_Post", Model)
+
+		@{
+			if (User.Identity?.IsAuthenticated == true)
+			{
+				<div class="float-left mt-3">
+					<a asp-controller="Posts" asp-action="Edit" asp-route-id="@Model.Id" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
+						Edit
+					</a>
+					@await (Html.RenderComponentAsync<DeleteConfirmation>(RenderMode.ServerPrerendered, new {IsOpen = false, PostView = Model }))
+				</div>
+			}
+		}
 	</div>
 </div>
-

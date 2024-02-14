@@ -9,7 +9,7 @@
 @{
     foreach(var post in Model.Posts)
     {
-        @await Html.PartialAsync("~/Views/Posts/_Post.cshtml", post)
+        @await Html.PartialAsync("_Post.cshtml", post)
     }
 }
 </div>

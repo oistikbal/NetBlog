@@ -24,6 +24,45 @@ namespace NetBlog.Controllers
             _userManager = userManager;
         }
 
+        [Route("/")]
+        [Route("[controller]")]
+        [HttpGet]
+        public async Task<IActionResult> Index([FromQuery] int page = 1)
+        {
+            const int pageSize = 10;
+
+            var posts = await _blogContext.Posts
+                .OrderByDescending(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(10)
+                .ToListAsync();
+
+            var postViews = new List<PostView>();
+            foreach (var post in posts)
+            {
+                var user = await _userManager.FindByIdAsync(post.UserId);
+                var postView = new PostView
+                {
+                    Title = post.Title,
+                    Body = post.Body,
+                    Email = user?.Email,
+                    Id = post.Id
+                };
+                postViews.Add(postView);
+            }
+
+            var totalPosts = _blogContext.Posts.Count();
+            var totalPages = (int)Math.Ceiling(totalPosts / (double)pageSize);
+
+            var model = new PostsView
+            {
+                Posts = postViews,
+                CurrentPage = page,
+                TotalPages = totalPages
+            };
+
+            return View(model);
+        }
 
         [Route("[controller]/{id?}")]
         [HttpGet]
@@ -40,6 +79,7 @@ namespace NetBlog.Controllers
 			postView.Title = post.Title;
             postView.Body = post.Body;
             postView.Email = postUser.Email;
+            postView.Id = post.Id;
 
 			return View(postView);
 		}
@@ -86,7 +126,7 @@ namespace NetBlog.Controllers
             var post = await _blogContext.Posts.FindAsync(id);
 
             if (post == null)
-                return RedirectToAction("Index","Home");
+                return RedirectToAction(nameof(Index));
 
             var user = await _userManager.GetUserAsync(this.User);
 
@@ -98,7 +138,7 @@ namespace NetBlog.Controllers
                 return View(postInput);
             }
 
-			return RedirectToAction("Index", "Home");
+			return RedirectToAction(nameof(Index));
 		}
 
         [Route("[controller]/{id?}")]
@@ -113,7 +153,7 @@ namespace NetBlog.Controllers
             var post = await _blogContext.Posts.FindAsync(id);
 
             if (post == null)
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(Index));
 
             var user = await _userManager.GetUserAsync(this.User);
 
@@ -126,23 +166,14 @@ namespace NetBlog.Controllers
                 return RedirectToAction(nameof(Show), new { id = post.Id });
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(Index));
         }
 
         [Route("[controller]/{id?}")]
-        [Authorize]
         [HttpDelete]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return Ok(new { Message = "Success" });
         }
     }
 }

@@ -11,7 +11,9 @@ builder.Services.AddDbContext<BlogContext>(options => options.UseSqlite(connecti
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<BlogContext>();
 
 // Add services to the container.
+builder.Services.AddScoped<HttpClient>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
@@ -35,7 +37,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Posts}/{action=Index}/{id?}");
 
 app.MapBlazorHub();
 app.MapRazorPages();

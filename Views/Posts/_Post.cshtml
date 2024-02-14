@@ -1,6 +1,6 @@
 ﻿@model PostView
 
-<p class="text-left text-2xl font-bold">@Model.Title</p>
+<a <a asp-controller="Posts" asp-action="Show" asp-route-id="@Model.Id" class="text-left text-xl font-bold hover:text-blue-500">@Model.Title</a>
 <p class="md\:text-left">@Html.Raw(Model.Body)</p>
 <div class="flex flex-row mt-3 ml-auto float-right">
 	<p class="text-right text-slate-700 pt-1 mr-2">@Model.Email</p>
