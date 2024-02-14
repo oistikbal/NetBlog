@@ -6,7 +6,9 @@
 		@await Html.PartialAsync("_Post", Model)
 
 		@{
-			if (User.Identity?.IsAuthenticated == true)
+			var usr = await UserManager.Users.Include(u => u.Posts).FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+
+			if (usr != null && usr.Posts.Any(p => p.Id == Model.Id))
 			{
 				<div class="float-left mt-3">
 					<a asp-controller="Posts" asp-action="Edit" asp-route-id="@Model.Id" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">

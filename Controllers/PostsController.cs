@@ -174,12 +174,24 @@ namespace NetBlog.Controllers
         [HttpDelete]
         public async Task<ActionResult> Delete(int id)
         {
-            var post = await _blogContext.Posts.FindAsync(id);
+			var post = await _blogContext.Posts.FindAsync(id);
 
-            _blogContext.Posts.Remove(post);
-            await _blogContext.SaveChangesAsync();
+			if (post == null)
+				return NotFound();
 
-            return Ok();
-        }
+			var user = await _userManager.GetUserAsync(this.User);
+
+			if (user != null && post.User?.Id == user.Id)
+			{
+				_blogContext.Posts.Remove(post);
+				await _blogContext.SaveChangesAsync();
+
+				return Ok();
+			}
+            else
+            {
+				return Unauthorized();
+			}
+		}
     }
 }
