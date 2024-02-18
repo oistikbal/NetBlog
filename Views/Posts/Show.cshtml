@@ -17,6 +17,29 @@
 					@await (Html.RenderComponentAsync<DeleteConfirmation>(RenderMode.ServerPrerendered, new {IsOpen = false, PostView = Model }))
 				</div>
 			}
+
+
+			if (usr != null)
+			{
+				<p class="font-bold text-l mt-12 pt-5 text-left">Comments</p>
+				<div>
+					<form asp-controller="Comments" asp-action="Create">
+						<input type="hidden" id="PostId" name="PostId" value="@Model.Id">
+						<textarea id="Body" name="Body" class="w-full bg-white border border-gray-300 rounded-md p-2 mb-2 focus:outline-none focus:ring focus:border-blue-300" rows="3" placeholder="Add a comment..."></textarea>
+						<div class="flex justify-end">
+							<button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Comment</button>
+						</div>
+					</form>
+				</div>
+			}
 		}
+
+		@foreach (var comment in Model.Comments)
+		{
+			<div class="bg-white p-4 rounded-lg mb-2">
+				<p>@comment.Body</p>
+			</div>
+		}
+
 	</div>
 </div>

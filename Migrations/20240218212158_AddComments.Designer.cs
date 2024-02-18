@@ -11,7 +11,7 @@ using NetBlog.Models.Data;
 namespace NetBlog.Migrations
 {
     [DbContext(typeof(BlogContext))]
-    [Migration("20240217205823_AddComments")]
+    [Migration("20240218212158_AddComments")]
     partial class AddComments
     {
         /// <inheritdoc />
@@ -321,7 +321,7 @@ namespace NetBlog.Migrations
             modelBuilder.Entity("NetBlog.Models.Comment", b =>
                 {
                     b.HasOne("NetBlog.Models.Post", "Post")
-                        .WithMany()
+                        .WithMany("Comments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -351,6 +351,11 @@ namespace NetBlog.Migrations
             modelBuilder.Entity("NetBlog.Areas.Identity.Data.User", b =>
                 {
                     b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("NetBlog.Models.Post", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

@@ -79,7 +79,8 @@ namespace NetBlog.Controllers
 			postView.Title = post.Title;
             postView.Body = post.Body;
             postView.Email = postUser.Email;
-            postView.Id = post.Id;
+            postView.Comments = await GetCommentsAsync(id);
+			postView.Id = post.Id;
 
 			return View(postView);
 		}
@@ -193,5 +194,20 @@ namespace NetBlog.Controllers
 				return Unauthorized();
 			}
 		}
-    }
+
+        [NonAction]
+		private async Task<ICollection<CommentView>> GetCommentsAsync(int id)
+		{
+			var comments = await _blogContext.Comments
+				.Where(c => c.PostId == id)
+				.Select(c => new CommentView
+				{
+					Body = c.Body,
+					Email = c.UserId != null ? _userManager.FindByIdAsync(c.UserId).Result.Email : null
+				})
+				.ToListAsync();
+
+			return comments;
+		}
+	}
 }

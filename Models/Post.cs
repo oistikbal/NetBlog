@@ -12,6 +12,7 @@ namespace NetBlog.Models
 		public string UserId { get; set; }
 		public string Title { get; set; }
         public string Body { get; set; }
+        public ICollection<Comment> Comments { get; set; }
     }
 
     public class PostView
@@ -20,7 +21,8 @@ namespace NetBlog.Models
 		public string Title { get; set; }
         public string Body { get; set; }
         public string Email { get; set; }
-    }
+		public ICollection<CommentView> Comments { get; set; }
+	}
 
     public class PostsView
     {
