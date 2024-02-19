@@ -18,10 +18,27 @@
 				</div>
 			}
 
+		}
 
+		<div class="mt-12">
+			<p class="font-bold text-l mt-12 pt-5 text-left">Comments</p>
+		@foreach (var comment in Model.Comments)
+		{
+			<div class="flex items-start space-x-2 mt-2">
+				<img gravatar-email="@comment.Email); " gravatar-size="80" class="rounded-full h-9 w-9 mt-5 hover:scale-125 transform transition duration-1" ml-0" alt="GravatarHelper.DefaultImageIdenticon" />
+				<div class="bg-gray-100 p-4 w-11/12">
+					<p class="font-semibold">@comment.Email</p>
+					<p class="text-gray-700">@comment.Body</p>
+				</div>
+			</div>
+
+		}
+		</div>
+
+		@{
 			if (usr != null)
 			{
-				<p class="font-bold text-l mt-12 pt-5 text-left">Comments</p>
+				<p class="font-bold text-l mt-6 pt-5 text-left">Add comment</p>
 				<div>
 					<form asp-controller="Comments" asp-action="Create">
 						<input type="hidden" id="PostId" name="PostId" value="@Model.Id">
@@ -32,18 +49,6 @@
 					</form>
 				</div>
 			}
-		}
-
-		@foreach (var comment in Model.Comments)
-		{
-			<div class="flex items-start space-x-2 mt-2">
-				<img gravatar-email="@comment.Email); " gravatar-size="80" class="rounded-full h-9 w-9 mt-5 hover:scale-125 transform transition duration-1" ml-0" alt="GravatarHelper.DefaultImageIdenticon" /></a>
-				<div class="bg-gray-100 p-4 w-11/12">
-					<p class="font-semibold">@comment.Email</p>
-					<p class="text-gray-700">@comment.Body</p>
-				</div>
-			</div>
-
 		}
 
 	</div>
