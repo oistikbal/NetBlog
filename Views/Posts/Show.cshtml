@@ -36,9 +36,14 @@
 
 		@foreach (var comment in Model.Comments)
 		{
-			<div class="bg-white p-4 rounded-lg mb-2">
-				<p>@comment.Body</p>
+			<div class="flex items-start space-x-2 mt-2">
+				<img gravatar-email="@comment.Email); " gravatar-size="80" class="rounded-full h-9 w-9 mt-5 hover:scale-125 transform transition duration-1" ml-0" alt="GravatarHelper.DefaultImageIdenticon" /></a>
+				<div class="bg-gray-100 p-4 w-11/12">
+					<p class="font-semibold">@comment.Email</p>
+					<p class="text-gray-700">@comment.Body</p>
+				</div>
 			</div>
+
 		}
 
 	</div>
