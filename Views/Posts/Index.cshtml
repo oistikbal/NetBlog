@@ -14,11 +14,23 @@
 }
 </div>
 
-<div class="flex justify-center mt-4">
-    <nav class="inline-flex">
-        @for (var i = 1; i <= Model.TotalPages; i++)
-        {
-            <a href="@Url.Action("Index", new { page = i })" class="mx-1 px-3 py-1 rounded-md bg-indigo-600 text-white hover:scale-125 transform transition duration-1">@i</a>
-        }
+<div class="flex justify-center">
+    <nav class="flex space-x-2" aria-label="Pagination">
+        <a href="@Url.Action("Index", new { page = 1 })" class="mx-1 px-3 py-1 rounded-md bg-indigo-600 text-white hover:scale-125 transform transition duration-1">
+            <<
+        </a>
+        <a href="@Url.Action("Index", new { page = Math.Clamp(Model.CurrentPage - 1, 1, Model.TotalPages) })" class="mx-1 px-3 py-1 rounded-md bg-indigo-600 text-white hover:scale-125 transform transition duration-1">
+            <
+        </a>
+        <a href="@Model.CurrentPage" class="mx-1 px-3 py-1 rounded-md bg-indigo-600 text-white hover:scale-125 transform transition duration-1">
+            @Model.CurrentPage
+        </a>
+        <a href="@Url.Action("Index", new { page = Math.Clamp(Model.CurrentPage + 1, 1, Model.TotalPages) })" class="mx-1 px-3 py-1 rounded-md bg-indigo-600 text-white hover:scale-125 transform transition duration-1">
+            >
+        </a>
+        <a href="@Url.Action("Index", new { page = @Model.TotalPages })" class="mx-1 px-3 py-1 rounded-md bg-indigo-600 text-white hover:scale-125 transform transition duration-1">
+            >>
+        </a>
+
     </nav>
 </div>
