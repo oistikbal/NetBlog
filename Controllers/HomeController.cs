@@ -1,10 +1,9 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using NetBlog.Areas.Identity.Data;
 using NetBlog.Models;
 using NetBlog.Models.Data;
+using System.Diagnostics;
 
 namespace NetBlog.Controllers;
 

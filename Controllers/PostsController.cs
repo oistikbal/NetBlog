@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using NetBlog.Areas.Identity.Data;
 using NetBlog.Models;
 using NetBlog.Models.Data;
@@ -70,25 +67,25 @@ namespace NetBlog.Controllers
         {
             var post = await _blogContext.Posts.FirstOrDefaultAsync(post => post.Id == id);
 
-            if(post == null)
+            if (post == null)
                 return Redirect("/");
 
-			var postUser = await _userManager.FindByIdAsync(post.UserId);
+            var postUser = await _userManager.FindByIdAsync(post.UserId);
 
-			var postView = new PostView();
-			postView.Title = post.Title;
+            var postView = new PostView();
+            postView.Title = post.Title;
             postView.Body = post.Body;
             postView.Email = postUser.Email;
             postView.Comments = await GetCommentsAsync(id);
-			postView.Id = post.Id;
+            postView.Id = post.Id;
 
-			return View(postView);
-		}
+            return View(postView);
+        }
 
-		[Route("[controller]/New")]
-		[HttpGet]
-		[Authorize]
-		public ActionResult New()
+        [Route("[controller]/New")]
+        [HttpGet]
+        [Authorize]
+        public ActionResult New()
         {
             return View();
         }
@@ -111,7 +108,7 @@ namespace NetBlog.Controllers
                 _blogContext.Posts.Add(post);
                 await _blogContext.SaveChangesAsync();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
             }
@@ -119,10 +116,10 @@ namespace NetBlog.Controllers
             return RedirectToAction(nameof(Show), new { id = post.Id }); ;
         }
 
-		[Route("[controller]/{id?}/edit")]
-		[HttpGet]
-		[Authorize]
-		public async Task<ActionResult> Edit(int id)
+        [Route("[controller]/{id?}/edit")]
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult> Edit(int id)
         {
             var post = await _blogContext.Posts.FindAsync(id);
 
@@ -131,7 +128,7 @@ namespace NetBlog.Controllers
 
             var user = await _userManager.GetUserAsync(this.User);
 
-			if (user != null && post.User?.Id == user.Id)
+            if (user != null && post.User?.Id == user.Id)
             {
                 var postInput = new PostInput();
                 postInput.Title = post.Title;
@@ -139,8 +136,8 @@ namespace NetBlog.Controllers
                 return View(postInput);
             }
 
-			return RedirectToAction(nameof(Index));
-		}
+            return RedirectToAction(nameof(Index));
+        }
 
         [Route("[controller]/{id?}")]
         [HttpPost]
@@ -175,39 +172,39 @@ namespace NetBlog.Controllers
         [HttpDelete]
         public async Task<ActionResult> Delete(int id)
         {
-			var post = await _blogContext.Posts.FindAsync(id);
+            var post = await _blogContext.Posts.FindAsync(id);
 
-			if (post == null)
-				return NotFound();
+            if (post == null)
+                return NotFound();
 
-			var user = await _userManager.GetUserAsync(this.User);
+            var user = await _userManager.GetUserAsync(this.User);
 
-			if (user != null && post.User?.Id == user.Id)
-			{
-				_blogContext.Posts.Remove(post);
-				await _blogContext.SaveChangesAsync();
+            if (user != null && post.User?.Id == user.Id)
+            {
+                _blogContext.Posts.Remove(post);
+                await _blogContext.SaveChangesAsync();
 
-				return Ok();
-			}
+                return Ok();
+            }
             else
             {
-				return Unauthorized();
-			}
-		}
+                return Unauthorized();
+            }
+        }
 
         [NonAction]
-		private async Task<ICollection<CommentView>> GetCommentsAsync(int id)
-		{
-			var comments = await _blogContext.Comments
-				.Where(c => c.PostId == id)
-				.Select(c => new CommentView
-				{
-					Body = c.Body,
-					Email = c.UserId != null ? _userManager.FindByIdAsync(c.UserId).Result.Email : null
-				})
-				.ToListAsync();
+        private async Task<ICollection<CommentView>> GetCommentsAsync(int id)
+        {
+            var comments = await _blogContext.Comments
+                .Where(c => c.PostId == id)
+                .Select(c => new CommentView
+                {
+                    Body = c.Body,
+                    Email = c.UserId != null ? _userManager.FindByIdAsync(c.UserId).Result.Email : null
+                })
+                .ToListAsync();
 
-			return comments;
-		}
-	}
+            return comments;
+        }
+    }
 }

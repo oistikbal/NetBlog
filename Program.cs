@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using NetBlog.Areas.Identity.Data;
 using NetBlog.Models.Data;
@@ -41,13 +39,13 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-	app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 else
 {
-	DataSeeder.SeedAsync(app.Services.CreateScope().ServiceProvider).Wait();
+    DataSeeder.SeedAsync(app.Services.CreateScope().ServiceProvider).Wait();
 }
 
 app.UseHttpsRedirection();

@@ -16,13 +16,13 @@ namespace NetBlog.Models
 
     public class CommentView
     {
-		public string Body { get; set; }
-		public string Email { get; set; }
-	}
+        public string Body { get; set; }
+        public string Email { get; set; }
+    }
 
-	public class CommentInput
-	{
+    public class CommentInput
+    {
         public int PostId { get; set; }
-		public string Body { get; set; }
-	}
+        public string Body { get; set; }
+    }
 }

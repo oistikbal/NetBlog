@@ -20,31 +20,31 @@ namespace NetBlog.Controllers
         }
 
 
-		[Route("[controller]/Create")]
-		[HttpPost]
-		public async Task<ActionResult> Create([Bind("PostId,Body")] CommentInput commentInput)
-		{
+        [Route("[controller]/Create")]
+        [HttpPost]
+        public async Task<ActionResult> Create([Bind("PostId,Body")] CommentInput commentInput)
+        {
 
-			if (!ModelState.IsValid)
-				return RedirectToAction("Show", "Posts", new { id = commentInput.PostId});
+            if (!ModelState.IsValid)
+                return RedirectToAction("Show", "Posts", new { id = commentInput.PostId });
 
-			var comment = new Comment();
-			comment.User = await _userManager.GetUserAsync(this.User);
-			comment.Body = commentInput.Body;
-			comment.PostId = commentInput.PostId;
+            var comment = new Comment();
+            comment.User = await _userManager.GetUserAsync(this.User);
+            comment.Body = commentInput.Body;
+            comment.PostId = commentInput.PostId;
 
-			try
-			{
-				_blogContext.Comments.Add(comment);
-				await _blogContext.SaveChangesAsync();
-				return RedirectToAction("Show", "Posts", new { id = commentInput.PostId });
-			}
-			catch (Exception e)
-			{
-				_logger.LogError(e, e.Message);
-			}
+            try
+            {
+                _blogContext.Comments.Add(comment);
+                await _blogContext.SaveChangesAsync();
+                return RedirectToAction("Show", "Posts", new { id = commentInput.PostId });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+            }
 
-			return RedirectToAction("Index", "Posts");
-		}
-	}
+            return RedirectToAction("Index", "Posts");
+        }
+    }
 }
