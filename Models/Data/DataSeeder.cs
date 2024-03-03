@@ -11,6 +11,10 @@ namespace NetBlog.Models.Data
             var userManager = services.GetRequiredService<UserManager<User>>();
             var dbContext = services.GetRequiredService<BlogContext>();
 
+            if (dbContext.Posts.Any())
+                return;
+
+
             // Seed users
             var userFaker = new Faker<User>()
                 .RuleFor(u => u.UserName, f => f.Internet.UserName())
