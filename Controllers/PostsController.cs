@@ -87,6 +87,7 @@ namespace NetBlog.Controllers
         [Authorize]
         public ActionResult New()
         {
+            ViewData["FormAction"] = "Create";
             return View();
         }
 
@@ -130,6 +131,7 @@ namespace NetBlog.Controllers
 
             if (user != null && post.User?.Id == user.Id)
             {
+                ViewData["FormAction"] = "Update";
                 var postInput = new PostInput();
                 postInput.Title = post.Title;
                 postInput.Body = post.Body;
